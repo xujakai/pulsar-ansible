@@ -1,0 +1,9 @@
+---
+- name: Alter apache pulsar configurations | {{ apachePulsarConfigFile }}
+  lineinfile:
+    dest: "{{ apachePulsarConfigFile }}"
+    regexp: "{{ ite.regexp }}"
+    line: '{{ ite.line }}'
+  loop_control:
+    loop_var: ite
+  with_items: "{{ apachePulsarConfigValues }}"

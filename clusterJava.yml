@@ -1,0 +1,6 @@
+---
+
+- hosts: clusterBrokerNodes:clusterBrokerAddNodes:clusterBookkeeperNodes:clusterBookkeeperAddNodes
+  gather_facts: true
+  roles:
+    - java

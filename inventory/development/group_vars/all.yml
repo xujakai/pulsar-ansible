@@ -1,0 +1,100 @@
+---
+
+javaVersion: 8
+updateJava: false # only when you need to update java version
+
+useSystemFirewall: false
+
+apachePulsarGroup: apachePulsar
+apachePulsarUser: apachePulsar
+apachePulsarGroupId: 9000
+apachePulsarUserId: 9000
+
+apachePulsarVersion: 2.4.0
+apachePulsarTarLocation: "/home/apachePulsar/packages/apache-pulsar-{{ apachePulsarVersion }}-bin.tar.gz"
+
+zookeeperHome: /export/servers/zookeeper
+
+# below will be used while decommission/downgrade only
+apachePulsarOldVersion: 2.3.0
+
+apachePulsarInstallDir: /export/pulsar
+apachePulsarHome: "{{ apachePulsarInstallDir }}/apache-pulsar"
+apachePulsarJournalDataDir: "{{ apachePulsarInstallDir }}/apachePulsar-data-journal"
+apachePulsarLedgerDataDir: "{{ apachePulsarInstallDir }}/apachePulsar-data-ledger"
+apachePulsarLogDir: "{{ apachePulsarInstallDir }}/apachePulsar-log"
+
+# JVM Settings
+apachePulsarXms: 2G
+apachePulsarXmx: "{{ apachePulsarXms }}"
+apachePulsarMaxDirectMemorySize: 4G                 # 2 times apachePulsarXms
+apachePulsarGcSettings: '-XX:+UseG1GC -XX:MaxGCPauseMillis=10 -XX:+ParallelRefProcEnabled -XX:+UnlockExperimentalVMOptions -XX:+AggressiveOpts -XX:+DoEscapeAnalysis -XX:ParallelGCThreads=32 -XX:ConcGCThreads=32 -XX:G1NewSizePercent=50 -XX:+DisableExplicitGC -XX:-ResizePLAB"'
+
+# bookie config
+apachePulsarBookiePort: 4181
+apachePulsarBookieHttpServerPort: 4182
+apachePulsarBookieEnableStatistics: false
+apachePulsarBookiePrometheusStatsHttpPort: "{{ apachePulsarBookieHttpServerPort }}"
+
+# broker config
+apachePulsarBrokerServicePort: 6650
+apachePulsarBrokerWebServicePort: 8081
+apachePulsarClusterName: pulsar-cluster-xjk
+
+apachePulsarJmxPort: 9999
+
+# zookeeper config
+# 192.168.56.100:2181,192.168.56.101:2181,192.168.56.102:2181
+apachePulsarZookeeperAddressString: 192.168.133.100:2181,192.168.133.106:2181,192.168.133.102:2181
+apachePulsarZookeeperConnectionTimeoutMs: 10000
+
+### Production Optimization Parameters
+### if nothing is set then it will use default values.
+
+
+configFiles:
+  bookkeeper.conf:
+    - regexp: '^bookiePort='
+      line: 'bookiePort={{ apachePulsarBookiePort }}'
+    - regexp: '^journalDirectory='
+      line: 'journalDirectory={{ apachePulsarJournalDataDir }}'
+    - regexp: '^ledgerDirectories='
+      line: 'ledgerDirectories={{ apachePulsarLedgerDataDir }}'
+    - regexp: '^zkServers='
+      line: 'zkServers={{ apachePulsarZookeeperAddressString }}'
+    - regexp: '^zkTimeout='
+      line: 'zkTimeout={{ apachePulsarZookeeperConnectionTimeoutMs }}'
+    - regexp: '^enableStatistics='
+      line: 'enableStatistics={{ apachePulsarBookieEnableStatistics }}'
+    - regexp: '^prometheusStatsHttpPort='
+      line: 'prometheusStatsHttpPort={{ apachePulsarBookiePrometheusStatsHttpPort }}'
+    - regexp: '^httpServerPort='
+      line: 'httpServerPort={{ apachePulsarBookieHttpServerPort }}'
+
+  broker.conf:
+    - regexp: '^zookeeperServers='
+      line: 'zookeeperServers={{ apachePulsarZookeeperAddressString }}'
+    - regexp: '^configurationStoreServers='
+      line: 'configurationStoreServers={{ apachePulsarZookeeperAddressString }}'
+    - regexp: '^brokerServicePort='
+      line: 'brokerServicePort={{ apachePulsarBrokerServicePort }}'
+    - regexp: '^webServicePort='
+      line: 'webServicePort={{ apachePulsarBrokerWebServicePort }}'
+    - regexp: '^clusterName='
+      line: 'clusterName={{ apachePulsarClusterName }}'
+    - regexp: '^zooKeeperSessionTimeoutMillis='
+      line: 'zooKeeperSessionTimeoutMillis={{ apachePulsarZookeeperConnectionTimeoutMs }}'
+    - regexp: '^globalZookeeperServers='
+      line: 'globalZookeeperServers={{ apachePulsarZookeeperAddressString }}'
+
+  pulsar_env.sh:
+    - regexp: '^PULSAR_MEM='
+      line: 'PULSAR_MEM=${PULSAR_MEM:-"-Xms{{ apachePulsarXms }} -Xmx{{ apachePulsarXmx }} -XX:MaxDirectMemorySize={{ apachePulsarMaxDirectMemorySize }}"}'
+    - regexp: '^PULSAR_GC='
+      line: 'PULSAR_GC=${PULSAR_GC:-"{{ apachePulsarGcSettings }}"}'
+
+  client.conf:
+    - regexp: '^webServiceUrl='
+      line: 'webServiceUrl=http://127.0.0.1:{{ apachePulsarBrokerWebServicePort }}/'
+    - regexp: '^brokerServiceUrl='
+      line: 'brokerServiceUrl=pulsar://127.0.0.1:{{ apachePulsarBrokerServicePort }}/'

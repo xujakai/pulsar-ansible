@@ -1,0 +1,6 @@
+---
+- name: Creating apache pulsar configurations | {{ apachePulsarConfigFile }}
+  template:
+    src: "{{ apachePulsarConfigFile }}"
+    dest: "{{ apachePulsarInstallDir }}/apache-pulsar-{{ apachePulsarVersion }}/conf/{{ apachePulsarConfigFile }}"
+  register: configStatus

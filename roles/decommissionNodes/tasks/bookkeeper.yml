@@ -1,0 +1,33 @@
+---
+
+- name: stopping broker & booker service
+  import_role:
+    name: serviceState
+  vars:
+    serviceName: bookkeeper
+    serviceState: stopped
+
+- name: pulsar broker & bookkeeper port status
+  include_role:
+    name: portCheck
+  vars:
+    portNumber: "{{ item }}"
+    portStatus: stopped
+  loop:
+    - "{{ apachePulsarBookiePort }}"
+    - "{{ apachePulsarBookieHttpServerPort }}"
+
+- name: removing all installation files for pulsar
+  command: "/bin/rm -rf {{ apachePulsarInstallDir }}/apache-pulsar-*"
+
+- name: removing data & log dirs related to installation
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ apachePulsarInstallDir }}/apache-pulsar"
+    - "{{ apachePulsarJournalDataDir }}"
+    - "{{ apachePulsarLedgerDataDir }}"
+    - "{{ apachePulsarLogDir }}"
+    - "{{ apachePulsarInstallDir }}/apache-pulsar-{{ apachePulsarVersion }}"
+    - "/usr/lib/systemd/system/bookkeeper.service"

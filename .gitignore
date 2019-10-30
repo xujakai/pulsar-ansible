@@ -1,0 +1,12 @@
+.vagrant*
+*retry
+.ansible*
+*.vscode
+terraform/.terraform
+terraform/variables.tf
+terraform/terraform.*
+terraform
+.idea
+files
+test
+ansible.cfg

@@ -1,0 +1,28 @@
+---
+- name: add log4j2.yaml
+  include_role:
+    name: configure
+    tasks_from: addDynamicConfigs.yml
+  vars:
+    - apachePulsarConfigFile: "{{ item }}"
+  loop:
+    - log4j2.yaml
+
+- name: creating apache pulsar configurations
+  include_role:
+    name: configure
+    tasks_from: alterConfigs.yml
+  vars:
+    - apachePulsarConfigFile: "{{ apachePulsarHome }}/conf/{{ item.key }}"
+    - apachePulsarConfigValues: "{{ item.value }}"
+  with_dict: "{{ configFiles }}"
+- name: creating apache pulsar configurations
+  include_role:
+    name: configure
+    tasks_from: alterConfigs.yml
+  vars:
+    - apachePulsarConfigFile: "{{ apachePulsarHome }}/conf/broker.conf"
+    - apachePulsarConfigValues:
+        - regexp: '^advertisedAddress='
+          line: 'advertisedAddress={{ ansible_fqdn }}'
+

@@ -1,0 +1,12 @@
+---
+
+- name: Setting pulsar Home | /etc/profile.d/apache-pulsar.sh
+  blockinfile:
+    path: /etc/profile.d/apache-pulsar.sh
+    mode: 0775
+    group: root
+    owner: root
+    create: true
+    block: |
+      export PULSAR_HOME={{ apachePulsarInstallDir }}/apache-pulsar
+      export PATH=$PULSAR_HOME/bin:$PATH

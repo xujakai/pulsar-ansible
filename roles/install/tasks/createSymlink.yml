@@ -1,0 +1,10 @@
+---
+
+- name: Creating symlink to latest version | {{ apachePulsarVersion }}
+  file:
+    src: "{{ apachePulsarInstallDir }}/apache-pulsar-{{ apachePulsarVersion }}"
+    dest: "{{ apachePulsarInstallDir }}/apache-pulsar"
+    owner: "{{ apachePulsarUser }}"
+    group: "{{ apachePulsarGroup }}"
+    state: link
+  register: pulsarSymlinkStatus

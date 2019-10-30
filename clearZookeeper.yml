@@ -1,0 +1,17 @@
+- hosts: clusterBrokerNodes[0]
+  gather_facts: true
+  ignore_errors: true
+  tasks:
+    - name: clear zookeeper
+      shell: |
+        {{ zookeeperHome }}/bin/zkCli.sh -server {{ apachePulsarZookeeperAddressString }} rmr {{ item }}
+      loop:
+        - "/admin"
+        - "/loadbalance"
+        - "/managed-ledgers"
+        - "/namespace"
+        - "/bookies"
+        - "/counters"
+        - "/ledgers"
+        - "/schemas"
+        - "/stream"
