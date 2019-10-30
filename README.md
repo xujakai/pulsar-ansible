@@ -49,29 +49,35 @@
 192.168.3.11
 ```
 
-#### 1.创建新集群
+#### a、创建新集群
 
 ansible-playbook -i inventory/development/cluster.ini clusterSetup.yml
 
-#### 2.重启集群
+#### b、重启集群
 
 ansible-playbook -i inventory/development/cluster.ini clusterRollingRestart.yml
 
-#### 3.添加broker
+#### c、添加broker
 
 ansible-playbook -i inventory/development/cluster.ini clusterAddBroker.yml
 
-#### 4.添加bookeeper
+#### d、添加bookkeeper
 
 ansible-playbook -i inventory/development/cluster.ini clusterAddBookkeeper.yml
 
-#### 5.移除Broker＆bookeeper
+#### e、移除Broker＆bookkeeper
 
 ansible-playbook -i inventory/development/cluster.ini clusterDecommissionNodes.yml
 
-#### 6.升级集群
+#### f、升级集群
 
 ansible-playbook -i inventory/development/cluster.ini clusterUpgrade.yml
+
+#### g、移除zookeeper中数据
+
+ansible-playbook -i inventory/development/cluster.ini clearZookeeper.yml
+
+需在inventory/development/group_vars/all.yml配制zookeeper home
 
 ### 四、检验集群
 
