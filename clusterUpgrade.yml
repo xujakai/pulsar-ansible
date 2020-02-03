@@ -21,7 +21,7 @@
         name: portCheck
       vars:
         portNumber: "{{ item }}"
-        portStatus: restarted
+        portStatus: started
       loop:
         - "{{ apachePulsarBrokerServicePort }}"
         - "{{ apachePulsarBrokerWebServicePort }}"
@@ -47,7 +47,7 @@
         name: portCheck
       vars:
         portNumber: "{{ item }}"
-        portStatus: restarted
+        portStatus: started
       loop:
         - "{{ apachePulsarBookiePort }}"
         - "{{ apachePulsarBookieHttpServerPort }}"
